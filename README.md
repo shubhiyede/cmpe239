@@ -7,11 +7,11 @@ CMPE 239: Web &amp; Data Mining
 2. The algorithm uses past 3 years of financial records of the companies an Data about the company and its stock from Twitter.
 3. It determines the approximate rate of stock for current year.
 4. To make prediction following Data Mining Techniques were applied:
-    4.1 Representation of tweets in Vector Space Model
-    4.2 TF-IDF weights of Relevant words
-    4.3 Cosine Similarity between any pair of tweets
-    4.4 Latent Symantic Analysis of Tweets usin Single Value Decomposition
-    4.5 k-means Clustering for tweet points to find stock rates of company.
+    1. Representation of tweets in Vector Space Model
+    2. TF-IDF weights of Relevant words
+    3. Cosine Similarity between any pair of tweets
+    4. Latent Symantic Analysis of Tweets usin Single Value Decomposition
+    5. k-means Clustering for tweet points to find stock rates of company.
 5. End Users: Market Analysts, Investors.
 
 ##Technology Stack:
