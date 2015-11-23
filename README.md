@@ -4,7 +4,7 @@ CMPE 239: Web &amp; Data Mining
 ##Project Statement:
 
 1. System to predict future company stocks.
-2. The algorithm uses past 3 years of financial records of the companies an Data about the company and its stock from Twitter.
+2. The algorithm uses past 3 years of financial records of the companies and Data about the company and its stock from Twitter.
 3. It determines the approximate rate of stock for current year.
 4. To make prediction following Data Mining Techniques were applied:
     1. Representation of tweets in Vector Space Model
