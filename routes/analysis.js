@@ -6,11 +6,10 @@ var tweetStats = require('./twitterSearch');
 
 exports.getStats = function (req, res) {
 
-    var compFirst = req.param("comp1");//.toLowerCase().trim();
-    var criteria = "";//"stock equity asset liability revenue EBITDA profit loss cash up down";
-    //var compSecond = req.param("comp2").toLowerCase().trim();
-    var getStats = "select * from mytable1 where Company_Name='" + compFirst + "'";
-    console.log(getStats);
+    var compFirst = req.param("comp1").toLowerCase().trim();
+    var criteria = "stock";//"stock equity asset liability revenue EBITDA profit loss cash up down";
+    var compSecond = req.param("comp2").toLowerCase().trim();
+    var getStats = "select * from mytable1 where Company_Name='" + compFirst + "' OR Company_Name='" + compSecond + "'";
     var polarity = [0,0,0];
     var analysisResult;
     tweetStats.getTweets(compFirst, criteria, function (err, result, twits) {
@@ -25,7 +24,7 @@ exports.getStats = function (req, res) {
 
         mysql.fetchData(getStats, function (err, rows) {
             console.log("rows="+rows.length);
-            if (rows.length < 3) {
+            if (rows.length < 6) {
 
                 res.render('index', {error: "Error"});
                 console.log(err);
@@ -107,16 +106,6 @@ exports.getStats = function (req, res) {
                 console.log("Year 2014 Stock rate = "+comp1[2].Share_Values);
                 console.log("AVG = "+avg);
                 console.log("The new value of stock for year 2015 is "+predict_share_value);
-                var shareValues=[];
-                shareValues.push(comp1[0].Share_Values);
-                shareValues.push(comp1[1].Share_Values);
-                shareValues.push(comp1[2].Share_Values);
-                shareValues.push(predict_share_value);
-                
-                //var clustersCopy = analysisResult.clusters;
-                //var cluster1 = clustersCopy[0];
-                //for(var i=0)
-
                 /*
                 var result = {
         score:          score,
@@ -137,12 +126,7 @@ exports.getStats = function (req, res) {
                     comp2: comp2,
                     polarity: polarity,
                     tweets: tweets,
-                    shareValues: shareValues,
-                    feature1Words:  analysisResult.feature1Words,
-                    feature2Words:  analysisResult.feature2Words,
-                    feature1Sentiment:  analysisResult.feature1Sentiment,
-                    feature2Sentiment:  analysisResult.feature2Sentiment,
-                    clusters:       analysisResult.clusters
+                    finalPercent: predict_share_value
                 });
             }
             // render or error
