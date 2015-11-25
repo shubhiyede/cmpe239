@@ -6,10 +6,11 @@ var tweetStats = require('./twitterSearch');
 
 exports.getStats = function (req, res) {
 
-    var compFirst = req.param("comp1").toLowerCase().trim();
-    var criteria = "stock";//"stock equity asset liability revenue EBITDA profit loss cash up down";
-    var compSecond = req.param("comp2").toLowerCase().trim();
-    var getStats = "select * from mytable1 where Company_Name='" + compFirst + "' OR Company_Name='" + compSecond + "'";
+    var compFirst = req.param("comp1");//.toLowerCase().trim();
+    var criteria = "";//"stock equity asset liability revenue EBITDA profit loss cash up down";
+    //var compSecond = req.param("comp2").toLowerCase().trim();
+    var getStats = "select * from mytable1 where Company_Name='" + compFirst + "'";
+    console.log(getStats);
     var polarity = [0,0,0];
     var analysisResult;
     tweetStats.getTweets(compFirst, criteria, function (err, result, twits) {
@@ -24,7 +25,7 @@ exports.getStats = function (req, res) {
 
         mysql.fetchData(getStats, function (err, rows) {
             console.log("rows="+rows.length);
-            if (rows.length < 6) {
+            if (rows.length < 3) {
 
                 res.render('index', {error: "Error"});
                 console.log(err);
@@ -57,20 +58,77 @@ exports.getStats = function (req, res) {
                 var avg = (comp1[0].Share_Values+comp1[1].Share_Values+comp1[2].Share_Values)/3;
                 var increase_by = avg-current_Share_Value;
                 var predict_share_value = parseInt((increase_by*100)/current_Share_Value);
+                var selected;
+
+                console.log("CLUSTERING RESULT");
+                console.log("Cluster 1 for words: ["+analysisResult.feature1Words+"] is of density="+analysisResult.clusters[0].length+" and sentimentScore="+analysisResult.feature1Sentiment);
+                console.log("Cluster 2 for words: ["+analysisResult.feature2Words+"] is of density="+analysisResult.clusters[1].length+" and sentimentScore="+analysisResult.feature2Sentiment);
+                if(analysisResult.clusters[1].length > analysisResult.clusters[0].length){
+                  selected=2;
+                }
+                else{
+                  selected=1;
+                }
+                if(selected==1){
+                  var difference = analysisResult.feature1Sentiment - analysisResult.feature2Sentiment;
+                  //analysisResult.score -> analysisResult.feature1Sentiment
+                  //100                  -> ?
+                  var rate = (100*analysisResult.feature1Sentiment)/analysisResult.score;
+                  if(difference>0){
+                    //Stock rate will increase
+                    console.log("Stock will increase by "+rate);
+                    
+                  }
+                  else{
+                    //Stock rate will decrease
+                    console.log("Stock will decrease by "+rate);
+                    
+                  }
+                }
+                else if(selected==2){
+                  var difference = analysisResult.feature2Sentiment - analysisResult.feature1Sentiment;
+                  //analysisResult.score -> analysisResult.feature2Sentiment
+                  //100                  -> ?
+                  var rate = (100*analysisResult.feature2Sentiment)/analysisResult.score;
+                  if(difference>0){
+                    //Stock rate will increase
+                    console.log("Stock will increase by "+rate);
+                    
+                  }
+                  else{
+                    //Stock rate will decrease
+                    console.log("Stock will decrease by "+rate);
+                    
+                  }
+                }
+                predict_share_value=avg*(100+rate)/100;
+                console.log("Year 2012 Stock rate = "+comp1[0].Share_Values);
+                console.log("Year 2013 Stock rate = "+comp1[1].Share_Values);
+                console.log("Year 2014 Stock rate = "+comp1[2].Share_Values);
+                console.log("AVG = "+avg);
+                console.log("The new value of stock for year 2015 is "+predict_share_value);
+                var shareValues=[];
+                shareValues.push(comp1[0].Share_Values);
+                shareValues.push(comp1[1].Share_Values);
+                shareValues.push(comp1[2].Share_Values);
+                shareValues.push(predict_share_value);
                 
-                
+                //var clustersCopy = analysisResult.clusters;
+                //var cluster1 = clustersCopy[0];
+                //for(var i=0)
+
                 /*
                 var result = {
-                  score:          score,          
-                  vsm:            vsm,
-                  feature1Words:  feature1Words,  //X-axis f1(w1,w4,w7)
-                  feature2Words:  feature2Words,  //Y-axis f2(w1,w2,w3)
-                  VS:             VS,
-                  US:             US,
-                  clusters:       clusters        
-                  //clusters[0] - red array of (x,y)  -ve <X< +ve
-                  //clusters[1] - green array of (x,y) -ve <Y< +ve
-                };
+        score:          score,
+        vsm:            vsm,
+        feature1Words:  feature1Words,
+        feature2Words:  feature2Words,
+        feature1Sentiment:  feature1Sentiment,
+        feature2Sentiment:  feature2Sentiment,
+        VS:             VS,
+        US:             US,
+        clusters:       clusters
+    };
                 */
                 
                 res.render('viewStats', {
@@ -79,7 +137,12 @@ exports.getStats = function (req, res) {
                     comp2: comp2,
                     polarity: polarity,
                     tweets: tweets,
-                    finalPercent: predict_share_value
+                    shareValues: shareValues,
+                    feature1Words:  analysisResult.feature1Words,
+                    feature2Words:  analysisResult.feature2Words,
+                    feature1Sentiment:  analysisResult.feature1Sentiment,
+                    feature2Sentiment:  analysisResult.feature2Sentiment,
+                    clusters:       analysisResult.clusters
                 });
             }
             // render or error

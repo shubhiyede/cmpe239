@@ -19,14 +19,43 @@ exports.getTweets = function getTweets(comp1, criteria, callback) {
     var positive = 0;
     var negative = 0;
     var neutral = 0;
-    var twitQuery = comp1 + ' ' + criteria + ' since:2015-01-01';
+    var twitQuery;
     var analysisResult;
-    
+    var tweets = [];
+    twitQuery = comp1 + ' stocks since:2015-01-01';
     twitterClient.get('search/tweets', {q: twitQuery, count: 100}, function (err, data) {
           var totalTweets = data.statuses;
-          var tweets = [];
-          console.log(JSON.stringify(totalTweets));
-          console.log("totalTweets.length="+totalTweets.length);
+          
+          //console.log(JSON.stringify(totalTweets));
+          //console.log("totalTweets.length="+totalTweets.length);
+          for (var i = 0; i < totalTweets.length; i++) {
+              totalTweets[i].text = totalTweets[i].text.replace(/^RT/, "");
+              totalTweets[i].text = totalTweets[i].text.replace(/^ReTw/, "");
+              tweets.push(totalTweets[i].text);
+          }
+          console.log("tweets.length="+tweets.length);
+      }
+    );
+    twitQuery = comp1 + ' loss' + ' since:2015-01-01';
+    twitterClient.get('search/tweets', {q: twitQuery, count: 100}, function (err, data) {
+          var totalTweets = data.statuses;
+          
+          //console.log(JSON.stringify(totalTweets));
+          //console.log("totalTweets.length="+totalTweets.length);
+          for (var i = 0; i < totalTweets.length; i++) {
+              totalTweets[i].text = totalTweets[i].text.replace(/^RT/, "");
+              totalTweets[i].text = totalTweets[i].text.replace(/^ReTw/, "");
+              tweets.push(totalTweets[i].text);
+          }
+          console.log("tweets.length="+tweets.length);
+      }
+    );
+    twitQuery = comp1 + ' profit' + ' since:2015-01-01';
+    twitterClient.get('search/tweets', {q: twitQuery, count: 100}, function (err, data) {
+          var totalTweets = data.statuses;
+          
+          //console.log(JSON.stringify(totalTweets));
+          //console.log("totalTweets.length="+totalTweets.length);
           for (var i = 0; i < totalTweets.length; i++) {
               totalTweets[i].text = totalTweets[i].text.replace(/^RT/, "");
               totalTweets[i].text = totalTweets[i].text.replace(/^ReTw/, "");
@@ -34,12 +63,6 @@ exports.getTweets = function getTweets(comp1, criteria, callback) {
           }
           console.log("tweets.length="+tweets.length);
           analysisResult=sentimentAnalysis(tweets);
-          /*
-          tweetsPolarity.push(positive);
-          tweetsPolarity.push(negative);
-          tweetsPolarity.push(neutral);
-          callback(err, tweetsPolarity, tweets);
-          */
           callback(err, analysisResult, tweets);
       }
     );

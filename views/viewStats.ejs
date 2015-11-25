@@ -27,15 +27,15 @@
             $("#show").click(function () {
                 $("p").show();
                 $(container4).css('border', "3px solid #000000");
-                $(container4).css('width', "450px");
-                $(container4).css('height', "250px");
+                $(container4).css('width', "600px");
+                $(container4).css('height', "300px");
             });
         });
     </script>
 
     <style type="text/css">
         .borderShadow {
-            box-shadow: 5px 5px 22px 0px #2C3E50;
+            box-shadow: 5px 5px 22px 0px #d3d576;
         }
 
     </style>
@@ -61,111 +61,172 @@
         }
     </style>
 
-
+<!--Dynamic Charts-->
     <script type="text/javascript">
         function generateMeterResults() {
-            var gaugeOptions = {
 
-                chart: {
-                    backgroundColor: '#EDEEFA',
-                    type: 'solidgauge'
 
-                },
-
-                title: null,
-
-                pane: {
-                    center: ['50%', '85%'],
-                    size: '140%',
-                    startAngle: -90,
-                    endAngle: 90,
-                    background: {
-                        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
-                        innerRadius: '60%',
-                        outerRadius: '100%',
-                        shape: 'arc'
-                    }
-                },
-
-                tooltip: {
-                    enabled: false
-                },
-
-                // the value axis
-                yAxis: {
-                    stops: [
-                        [0.1, '#DF5353'], // red
-                        [0.5, '#DDDF0D'], // yellow
-                        [0.9, '#55BF3B']  // green
-                    ],
-                    lineWidth: 0,
-                    minorTickInterval: null,
-                    tickPixelInterval: 400,
-                    tickWidth: 0,
+            $(function () {
+                $('#container-speed').highcharts({
                     title: {
-                        y: -70
+                        text: 'Stock rate prediction',
+                        x: -20 //center
                     },
-                    labels: {
-                        y: 16
-                    }
-                },
-
-                plotOptions: {
-                    solidgauge: {
-                        dataLabels: {
-                            y: 5,
-                            borderWidth: 0,
-                            useHTML: true
-                        }
-                    }
-                }
-            };
-
-            // The speed gauge
-            $('#container-speed').highcharts(Highcharts.merge(gaugeOptions, {
-                yAxis: {
-                    min: 0,
-                    max: 100,
-                    title: {
-                        text: 'M&A Prediction'
-
-                    }
-                },
-
-                credits: {
-                    enabled: false
-                },
-
-                series: [{
-                    name: 'M&A Prediction',
-                    data: [<%= finalPercent %>],
-                    dataLabels: {
-                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
-                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
-                        '<span style="font-size:12px;color:silver">%</span></div>'
+                    subtitle: {
+                        text: 'Team: Data Crunchers',
+                        x: -20
+                    },
+                    xAxis: {
+                        categories: ['2012', '2013', '2014', '2015']
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Stock rate'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
                     },
                     tooltip: {
-                        valueSuffix: '%'
-                    }
-                }]
+                        valueSuffix: ''
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    series: [{
+                        name: 'Company Stock',
+                        <!--shareValues[0],shareValues[1],shareValues[2],shareValues[3]-->
+                        data:  [
+                            <%= shareValues[0] %>,
+                            <%= shareValues[1] %>,
+                            <%= shareValues[2] %>,
+                            <%= shareValues[3] %>
+                        ]
 
-            }));
-        }
+                    }]
+                });
+            });
+
+            $(function () {
+
+                var scatterChart={
+                    chart: {
+                        type: 'scatter',
+                        zoomType: 'xy'
+                    },
+                    title: {
+                        text: 'Twitter Sentiments Clustering'
+                    },
+                    subtitle: {
+                        text: 'Source: Twitter Data'
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: true,
+                            text: 'Feature: <%= feature1Words %>'
+                        },
+                        startOnTick: true,
+                        endOnTick: true,
+                        showLastLabel: true
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Feature: <%= feature2Words %>'
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'left',
+                        verticalAlign: 'top',
+                        x: 100,
+                        y: 70,
+                        floating: true,
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+                        borderWidth: 1
+                    },
+                    plotOptions: {
+                        scatter: {
+                            marker: {
+                                radius: 5,
+                                states: {
+                                    hover: {
+                                        enabled: true,
+                                        lineColor: 'rgb(100,100,100)'
+                                    }
+                                }
+                            },
+                            states: {
+                                hover: {
+                                    marker: {
+                                        enabled: false
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<b>{series.name}</b><br>',
+                                pointFormat: '{point.x} , {point.y} '
+                            }
+                        }
+                    },
+                    series: []
+                }
+                var decrease = {
+                    name: 'Stock Decrease',
+                    color: 'rgba(223, 83, 83, .5)',
+                    data:  []
+                };
+                var increase = {
+                    name: 'Stock Increase',
+                    color: 'rgba(119, 152, 191, .5)',
+                    data:  []
+                };
+                <!-- cluster 1 always Stock decrease and 2 always stock increase-->
+                <% if(feature1Sentiment < feature2Sentiment){
+                    for(var i=0;i<clusters[0].length;++i){%>
+                        decrease.data.push(<%= clusters[0][i]%>);
+                    <%};
+                    console.log("decrease.data=");
+                    for(var i=0;i<clusters[1].length;++i){%>
+                        increase.data.push(<%= clusters[1][i]%>);
+                    <%}
+                }
+                else{
+                    for(var i=0;i<clusters[0].length;++i){%>
+                        increase.data.push(<%= clusters[0][i]%>);
+                    <%}
+                    for(var i=0;i<clusters[1].length;++i){%>
+                        decrease.data.push(<%= clusters[1][i]%>);
+                    <%}
+                }%>
+
+            scatterChart.series.push(decrease);
+            scatterChart.series.push(increase);
+            $('#container10').highcharts(scatterChart);
+        });
 
 
-        $(function () {
-            <%  if (data.length > 0 && data != 'undefined' && data != null && data) {
 
-            console.log(JSON.stringify(data));
-            %>
+    }
+
+
+    $(function () {
+        <%  if (data.length > 0 && data != 'undefined' && data != null && data) {
+
+        console.log(JSON.stringify(data));
+        %>
 
             $('#container1').highcharts({
                         chart: {
-                            backgroundColor: '#EDEEFA',
+                            backgroundColor: 'white',
                             type: 'column'
                         },
                         title: {
-                            text: 'Stock Symbol: <%= comp1[0].Company_Name.toString().toUpperCase() %>'
+                            text: ' <%= comp1[0].Company_Name.toString().toUpperCase() %>'
                         },
                         /*  subtitle: {
                          text: 'Source: WorldClimate.com'
@@ -188,7 +249,7 @@
                         yAxis: {
                             min: 0,
                             title: {
-                                text: 'Amount (billions)'
+                                text: 'Amount '
                             }
                         }
                         ,
@@ -247,101 +308,15 @@
                     }
             );
 
-            $('#container2').highcharts({
-                        chart: {
-                            backgroundColor: '#EDEEFA',
-                            type: 'column'
-                        },
-                        title: {
-                            text: 'Stock Symbol: <%= comp2[0].Company_Name.toString().toUpperCase() %>'
-                        },
-                        /*  subtitle: {
-                         text: 'Source: WorldClimate.com'
-                         }, */
 
-                        xAxis: {
-                            categories: [
-                                'Current Assests',
-                                'Liability',
-                                'Gross Profit',
-                                'Total Revenue',
-                                'EBITDA',
-                                'Gross Margin',
-                                'Cash Equivalent'
-
-                            ],
-                            crosshair: true
-                        }
-                        ,
-                        yAxis: {
-                            min: 0,
-                            title: {
-                                text: 'Amount (billions)'
-                            }
-                        }
-                        ,
-                        tooltip: {
-                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                            '<td style="padding:0"><b>{point.y:.1f} bn</b></td></tr>',
-                            footerFormat: '</table>',
-                            shared: true,
-                            useHTML: true
-                        }
-                        ,
-                        plotOptions: {
-                            column: {
-                                pointPadding: 0,
-                                borderWidth: 0
-                            }
-                        }
-                        ,
-                        series: [{
-
-                            name: "<%= comp2[0].Year %>",
-                            data: [
-                                <%= comp2[0].Total_Current_Assets %>,
-                                <%= comp2[0].Total_Liabilities %>,
-                                <%= comp2[0].Gross_Margin %>,
-                                <%= comp2[0].total_revenue %>,
-                                <%= comp2[0].EBITDA %>,
-                                <%= comp2[0].Cash_and_Cash_Equivalents %>
-                            ]
-
-                        }, {
-
-                            name: "<%= comp2[1].Year %>",
-                            data: [
-                                <%= comp2[1].Total_Current_Assets %>,
-                                <%= comp2[1].Total_Liabilities %>,
-                                <%= comp2[1].Gross_Margin %>,
-                                <%= comp2[1].total_revenue %>,
-                                <%= comp2[1].EBITDA %>,
-                                <%= comp2[1].Cash_and_Cash_Equivalents %>
-                            ]
-                        },
-                            {
-
-                                name: "<%= comp2[2].Year %>",
-                                data: [
-                                    <%= comp2[2].Total_Current_Assets %>,
-                                    <%= comp2[2].Total_Liabilities %>,
-                                    <%= comp2[2].Gross_Margin %>,
-                                    <%= comp2[2].total_revenue %>,
-                                    <%= comp2[2].EBITDA %>,
-                                    <%= comp2[2].Cash_and_Cash_Equivalents %>
-                                ]
-                            }]
-                    }
-            );
 
             <%}%>
 
 
             $('#container3').highcharts({
                 chart: {
-                    backgroundColor: '#EDEEFA',
-                    type: 'pie',
+                    backgroundColor: 'white',
+                    type: 'column',
                     options3d: {
                         enabled: true,
                         alpha: 45
@@ -351,7 +326,7 @@
                     text: 'Tweets Polarity'
                 },
                 subtitle: {
-                    text: "[ <%= comp1[0].Company_Name.toString().toUpperCase() %>" + " + " + "<%= comp2[0].Company_Name.toString().toUpperCase() %> ]"
+                    text: "[ <%= comp1[0].Company_Name.toString().toUpperCase() %>]"
                 },
                 plotOptions: {
                     pie: {
@@ -371,16 +346,57 @@
                 }]
             });
 
+
         });
 
     </script>
+
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
 
-
     <![endif]-->
-</head>
 
+<!--Static Charts-->
+
+    <script type="text/javascript">
+        $(function () {
+            $('#container11').highcharts({
+                title: {
+                    text: 'Stock rate prediction',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: 'Team: Data Crunchers',
+                    x: -20
+                },
+                xAxis: {
+                    categories: ['2012', '2013', '2014', '2015']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Stock rate'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: ''
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Company Stock',
+                    data: [701, 980, 520, 729]}]
+            });
+        });
+    </script>
 <body>
 
 <a id="menu-toggle" href="/" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
@@ -389,10 +405,10 @@
 
 <header id="top">
     <div class="row" style="background: #E6E610;">
-        <div class="col-lg-12 text-center" style="background: #63ADE6;">
+        <div class="col-lg-12 text-center" style="background: #99FFFF;">
 
             <!-- <img class="img-portfolio img-responsive" src="img/logo.jpg" width="100px" height="100px">  -->
-            <h2>COMPANY ACQUISITION PREDICTION</h2>
+            <h2>COMPANY STOCK PREDICTION</h2>
             <br>
         </div>
     </div>
@@ -400,19 +416,16 @@
 </header>
 
 
-<div class="row" style="background: #EDEEFA"><br><br><br><br>
-
+<div class="row" style="background: #FFFFFF"><br><br><br><br>
+    <div class="col-xs-2"></div>
     <div class="col-xs-6">
         <div id="container1" class="chartSize borderShadow"
-             style="min-width: 570px; height: 400px; margin: 0 auto; border-radius: 10px; border: 3px solid #000000;"></div>
+             style="min-width: 650px; height: 400px; margin: 0 auto; border-radius: 10px; border: 3px solid #000000;"></div>
     </div>
-    <div class="col-xs-6">
-        <div id="container2" class="chartSize borderShadow"
-             style="min-width: 590px; height: 400px; margin: 0 auto; border-radius: 10px; border: 3px solid #000000;"></div>
-    </div>
+
 </div>
 
-<div class="row" style="background: #EDEEFA"><br><br><br><br>
+<div class="row" style="background: #FFFFFF"><br><br><br><br>
 
     <div class="col-xs-3">
         <div class="pull-right"><br><br><br><br><br>
@@ -426,13 +439,22 @@
     <div class="col-xs-1"></div>
     <div class="col-xs-5">
         <div id="container4" class="chartSize borderShadow">
-            <div id="container-speed" style="width: 400px; height: 200px; float: left"></div>
+            <div id="container-speed" style="width: 600px; height: 300px; float: left"></div>
         </div>
     </div>
+
 </div>
 
 
-<div class="row" style="background: #EDEEFA;"><br><br><br>
+<div class="row" style="background: white"><br><br><br>
+    <div class="col-xs-2"></div>
+    <div class="col-sm-8 text-center" id="container10" class="chartSize"
+         style="box-shadow: 5px 5px 22px 0px #ffffff; width: 900px; height: 400px; margin: 0 auto; border-radius: 10px; border: 3px solid #000000;">
+        <div class="vis-container4">Scatter Plot</div>
+    </div>
+</div>
+
+<div class="row" style="background: #FFFFFF;"><br><br><br>
 
     <div class="col-xs-1"></div>
     <div class="col-xs-5" id="container3" class="chartSize"
@@ -442,9 +464,9 @@
 
 
         <div id="tweetBox" class="pull-right borderShadow">
-            <table border="1" style="max-width: 550px; pull-right">
+            <table border="1" style="max-width: 550px; pull-right: 0">
                 <thead>
-                <tr style="background: #63ADE6;">
+                <tr style="background: #99FFFF;">
                     <th>
                         <h3>
                             <center>Tweets
@@ -466,16 +488,19 @@
 
                                         <div class="row" style="background: #FAFAFA">
                                             <div class="col-xs-2">
-                                                <img src="images/tweet.png" width="40px" height="40px"></div>
+                                                <img src="images/tweet.png" width="40px" height="40px">
+                                            </div>
                                             <div class="col-xs-9">
                                                 <font face="Comic Sans MS">
                                                     <%= tweets[i] %>
+                                                </font>
                                             </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 <% } %>
 
-                                </tr></table>
+                            </table>
                         </div>
                     </td>
                 </tbody>
@@ -485,6 +510,7 @@
 
     </div>
 </div>
+
 </div>
 </div>
 </div>
@@ -493,14 +519,14 @@
     <section id="contact" class="contact">
         <div>
             <div class="row" style="background: #E6E610;">
-                <div class="col-lg-12 text-center" style="background: #63ADE6;">
-                    <h2><strong>TEAM 24</strong>
+                <div class="col-lg-12 text-center" style="background: #99FFFF;">
+                    <h2><strong>TEAM Data Crunchers</strong>
                     </h2>
                     <h4>
-                        <p>Vrushank Doshi<br>Pranav Dhapke<br>Vijesh Jain<br>Priyanka Bhansali</p></h4>
+                        <p>Ashish Srivastava<br>Chhavi Gupta<br>Jay Vora<br>Shubhi Yede<br>Surbhi Garg</p></h4>
                     <ul class="list-unstyled">
                         <li><strong>SAN JOSE STATE UNIVERSITY</strong></li>
-                        <li>1 Washington Sq, San Jose, CA 95192</li>
+                        <li>1 Washington Square, San Jose, CA 95192</li>
                     </ul>
                     <br>
                     <ul class="list-inline">
@@ -515,7 +541,7 @@
                         </li>
                     </ul>
                     <hr class="small">
-                    <p class="text-muted">Copyright &copy; Team 24 2015</p>
+                    <p class="text-muted">Copyright &copy; Team Data crunchers</p>
                 </div>
             </div>
         </div>

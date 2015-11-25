@@ -225,94 +225,94 @@
                     }
             );
 
-            $('#container2').highcharts({
-                        chart: {
-                            type: 'column'
-                        },
-                        title: {
-                            text: 'Stock Symbol: <%= comp2[0].Company_Name.toString().toUpperCase() %>'
-                        },
-                        /*  subtitle: {
-                         text: 'Source: WorldClimate.com'
-                         }, */
+<!--//             $('#container2').highcharts({-->
+                        <!--chart: {-->
+                            <!--type: 'column'-->
+                        <!--},-->
+                        <!--title: {-->
+                            <!--text: 'Stock Symbol: <%= comp2[0].Company_Name.toString().toUpperCase() %>'-->
+                        <!--},-->
+                        <!--/*  subtitle: {-->
+                         <!--text: 'Source: WorldClimate.com'-->
+                         <!--}, */-->
 
-                        xAxis: {
-                            categories: [
-                                'Current Assests',
-                                'Liability',
-                                'Gross Profit',
-                                'Share Value',
-                                'Employees',
-                                'Gross Margin',
-                                'Cash Equivalent'
+                        <!--xAxis: {-->
+                            <!--categories: [-->
+                                <!--'Current Assests',-->
+                                <!--'Liability',-->
+                                <!--'Gross Profit',-->
+                                <!--'Share Value',-->
+                                <!--'Employees',-->
+                                <!--'Gross Margin',-->
+                                <!--'Cash Equivalent'-->
 
-                            ],
-                            crosshair: true
-                        }
-                        ,
-                        yAxis: {
-                            min: 0,
-                            title: {
-                                text: 'Amount (billions)'
-                            }
-                        }
-                        ,
-                        tooltip: {
-                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                            '<td style="padding:0"><b>{point.y:.1f} bn</b></td></tr>',
-                            footerFormat: '</table>',
-                            shared: true,
-                            useHTML: true
-                        }
-                        ,
-                        plotOptions: {
-                            column: {
-                                pointPadding: 0,
-                                borderWidth: 0
-                            }
-                        }
-                        ,
-                        series: [{
+                            <!--],-->
+                            <!--crosshair: true-->
+                        <!--}-->
+                        <!--,-->
+                        <!--yAxis: {-->
+                            <!--min: 0,-->
+                            <!--title: {-->
+                                <!--text: 'Amount (billions)'-->
+                            <!--}-->
+                        <!--}-->
+                        <!--,-->
+                        <!--tooltip: {-->
+                            <!--headerFormat: '<span style="font-size:10px">{point.key}</span><table>',-->
+                            <!--pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +-->
+                            <!--'<td style="padding:0"><b>{point.y:.1f} bn</b></td></tr>',-->
+                            <!--footerFormat: '</table>',-->
+                            <!--shared: true,-->
+                            <!--useHTML: true-->
+                        <!--}-->
+                        <!--,-->
+                        <!--plotOptions: {-->
+                            <!--column: {-->
+                                <!--pointPadding: 0,-->
+                                <!--borderWidth: 0-->
+                            <!--}-->
+                        <!--}-->
+                        <!--,-->
+                        <!--series: [{-->
 
-                            name: "<%= comp2[0].Year %>",
-                            data: [
-                                <%= comp2[0].Total_Current_Assets %>,
-                                <%= comp2[0].Total_Liabilities %>,
-                                <%= comp2[0].Gross_Margin %>,
-                                <%= comp2[0].Share_Values %>,
-                                <%= comp2[0].Number_of_Employees %>,
-                                <%= comp2[0].Cash_and_Cash_Equivalents %>
-                            ]
+                            <!--name: "<%= comp2[0].Year %>",-->
+                            <!--data: [-->
+                                <!--<%= comp2[0].Total_Current_Assets %>,-->
+                                <!--<%= comp2[0].Total_Liabilities %>,-->
+                                <!--<%= comp2[0].Gross_Margin %>,-->
+                                <!--<%= comp2[0].Share_Values %>,-->
+                                <!--<%= comp2[0].Number_of_Employees %>,-->
+                                <!--<%= comp2[0].Cash_and_Cash_Equivalents %>-->
+                            <!--]-->
 
-                        }, {
+                        <!--}, {-->
 
-                            name: "<%= comp2[1].Year %>",
-                            data: [
-                                <%= comp2[1].Total_Current_Assets %>,
-                                <%= comp2[1].Total_Liabilities %>,
-                                <%= comp2[1].Gross_Margin %>,
-                                <%= comp2[1].Share_Values %>,
-                                <%= comp2[1].Number_of_Employees %>,
-                                <%= comp2[1].Cash_and_Cash_Equivalents %>
-                            ]
-                        },
-                            {
+                            <!--name: "<%= comp2[1].Year %>",-->
+                            <!--data: [-->
+                                <!--<%= comp2[1].Total_Current_Assets %>,-->
+                                <!--<%= comp2[1].Total_Liabilities %>,-->
+                                <!--<%= comp2[1].Gross_Margin %>,-->
+                                <!--<%= comp2[1].Share_Values %>,-->
+                                <!--<%= comp2[1].Number_of_Employees %>,-->
+                                <!--<%= comp2[1].Cash_and_Cash_Equivalents %>-->
+                            <!--]-->
+                        <!--},-->
+                            <!--{-->
 
-                                name: "<%= comp2[2].Year %>",
-                                data: [
-                                    <%= comp2[2].Total_Current_Assets %>,
-                                    <%= comp2[2].Total_Liabilities %>,
-                                    <%= comp2[2].Gross_Margin %>,
-                                    <%= comp2[2].Share_Values %>,
-                                    <%= comp2[2].Number_of_Employees %>,
-                                    <%= comp2[2].Cash_and_Cash_Equivalents %>
-                                ]
-                            }]
-                    }
-            );
+                                <!--name: "<%= comp2[2].Year %>",-->
+                                <!--data: [-->
+                                    <!--<%= comp2[2].Total_Current_Assets %>,-->
+                                    <!--<%= comp2[2].Total_Liabilities %>,-->
+                                    <!--<%= comp2[2].Gross_Margin %>,-->
+                                    <!--<%= comp2[2].Share_Values %>,-->
+                                    <!--<%= comp2[2].Number_of_Employees %>,-->
+                                    <!--<%= comp2[2].Cash_and_Cash_Equivalents %>-->
+                                <!--]-->
+                            <!--}]-->
+                    <!--}-->
+            <!--);-->
 
-            <%}%>
+            <!--<%}%> -->
 
 
             $('#container3').highcharts({
@@ -458,13 +458,13 @@
         <div>
             <div class="row" style="background: #E6E610;">
                 <div class="col-lg-12 text-center" style="background: #63ADE6;">
-                    <h2><strong>TEAM 24</strong>
+                    <h2><strong>TEAM Data Crunchers</strong>
                     </h2>
                     <h4>
-                        <p>Vrushank Doshi<br>Pranav Dhapke<br>Vijesh Jain<br>Priyanka Bhansali</p></h4>
+                       <p>Ashish Srivastava<br>Chhavi Gupta<br>Jay Vora<br>Shubhi Yede<br>Surbhi Garg</p></h4>
                     <ul class="list-unstyled">
                         <li><strong>SAN JOSE STATE UNIVERSITY</strong></li>
-                        <li>1 Washington Sq, San Jose, CA 95192</li>
+                        <li>1 Washington Square, San Jose, CA 95192</li>
                     </ul>
                     <br>
                     <ul class="list-inline">
